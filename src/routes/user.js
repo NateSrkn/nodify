@@ -4,8 +4,8 @@ const { createUser, getAllUsers, getUserById, deleteUser, updateUser } = require
 
 router.post('/', createUser)
 
-router.get('/', getAllUsers)
-router.get('/:userId', getUserById)
+router.get('/', verify, getAllUsers)
+router.get('/:userId', verify, getUserById)
 
 router.patch('/:userId', verify ,updateUser)
 

@@ -15,6 +15,7 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopo
 const usersRoute = require('./routes/user.js')
 const authRoute = require('./routes/auth.js')
 const postsRoute = require('./routes/posts')
+const topicsRoute = require('./routes/topics')
 app.use(cors({
   credentials: true,
   origin: true
@@ -24,9 +25,10 @@ app.use(express.json())
 app.use('/api/users', usersRoute)
 app.use('/api/auth', authRoute)
 app.use('/api/posts', postsRoute)
+app.use('/api/topics', topicsRoute)
 app.use('/', (req, res) => {
   res.json({
-    message: 'Hello!'
+    message: 'uh!'
   })
 })
 

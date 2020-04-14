@@ -23,7 +23,7 @@ const createUser = async (req, res) => {
       id: user.id,
       name: user.name,
       email: user.email,
-      created_at: user.created_at
+      createdAt: user.createdAt
     })
   }).catch(error => {
     res.status(500).json({
@@ -33,15 +33,36 @@ const createUser = async (req, res) => {
 }
 
 const getAllUsers = (req, res) => {
-  User.find()
-    .select('id name email created_at')
-    .then(users => {
-      return res.status(200).json({ users })
-    }).catch(error => {
-      res.status(500).json({
-        success: false,
-        message: 'We ran into a problem',
-        error: error.message
+  const perPage = parseInt(req.query.perPage) || 20
+  const filter = req.query.filter || ''
+  const currentPage = req.query.page > 0 ? req.query.page - 1 : 0
+  const sortBy = req.query.sortBy || 'createdAt'
+  const orderBy = req.query.orderBy || 'desc'
+  const sortQuery = { [sortBy]: orderBy }
+  const filterQuery = { email: new RegExp(filter, 'i') }
+  User.countDocuments(filterQuery)
+    .then(userCount => {
+      if (currentPage * perPage > userCount) {
+        return res.status(404).json({ message: 'There are no users here'})
+      }
+      User.find(filterQuery)
+      .limit(perPage)
+      .skip(currentPage * perPage)
+      .sort(sortQuery)
+      .select('id name email createdAt updatedAt')
+      .then(users => {
+        return res.status(200).json({ 
+          users,
+          total: userCount,
+          page: parseInt(req.query.page) || 1,
+          perPage: perPage
+         })
+      }).catch(error => {
+        res.status(500).json({
+          success: false,
+          message: 'We ran into a problem',
+          error: error.message
+        })
       })
     })
 }
@@ -54,7 +75,7 @@ const getUserById = (req, res) => {
       id: user.id,
       name: user.name,
       email: user.email,
-      created_at: user.created_at
+      createdAt: user.createdAt
     })
   }).catch(error => {
     res.status(500).json({
