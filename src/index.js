@@ -4,8 +4,6 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const dotenv = require('dotenv').config()
 
-const port = 3000 || process.env.PORT
-
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
   console.log('Connected to DB')
 }).catch((err) => {
@@ -30,6 +28,6 @@ app.use('/', (req, res) => {
   })
 })
 
-app.listen(port, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log(`Now running on ${port}`)
 })
