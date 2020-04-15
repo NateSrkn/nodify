@@ -13,6 +13,7 @@ const createUser = async (req, res) => {
 
   const user = new User({
     name: req.body.name,
+    username: req.body.username,
     email: req.body.email,
     password: hashedPass,
   })
@@ -22,6 +23,7 @@ const createUser = async (req, res) => {
     return res.status(200).json({
       id: user.id,
       name: user.name,
+      username: user.username,
       email: user.email,
       createdAt: user.createdAt
     })

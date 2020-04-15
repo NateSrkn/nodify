@@ -14,6 +14,7 @@ router.post('/', async (req, res) => {
   const token = jwt.sign({
     id: user.id,
     name: user.name,
+    username: user.username,
     issuer: 'https://www.nathansorkin.com'
   }, process.env.JWT_SECRET, { expiresIn: '2h' })
   res.header('auth-token', token).json({success: true, message: 'Authentication successful.', token: token})
