@@ -1,14 +1,14 @@
-const router = require('express').Router()
-const verify = require('./validateToken')
-const { createUser, getAllUsers, getUserById, deleteUser, updateUser } = require('../controllers/users')
-
+import express from 'express'
+import { verifyToken } from '../helpers/helper'
+import { createUser, getAllUsers, getUserById, deleteUser, updateUser } from '../controllers/users'
+let router = express.Router()
 router.post('/', createUser)
 
-router.get('/', verify, getAllUsers)
-router.get('/:userId', verify, getUserById)
+router.get('/', verifyToken, getAllUsers)
+router.get('/:userId', verifyToken, getUserById)
 
-router.patch('/:userId', verify ,updateUser)
+router.patch('/:userId', verifyToken ,updateUser)
 
-router.delete('/:userId', verify, deleteUser)
+router.delete('/:userId', verifyToken, deleteUser)
 
-module.exports = router
+export {router as usersRoute}

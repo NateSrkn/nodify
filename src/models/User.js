@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 mongoose.set('useCreateIndex', true)
 
 const userSchema = mongoose.Schema({
@@ -6,6 +6,6 @@ const userSchema = mongoose.Schema({
   username: { type: String, required: true, max: 30 },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, max: 1024, min: 6 }
-}, { timestamps: true})
+}, { timestamps: true, versionKey: false })
 
-module.exports = mongoose.model('User', userSchema)
+export default mongoose.model('User', userSchema)

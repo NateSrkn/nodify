@@ -1,17 +1,16 @@
-const mongoose = require('mongoose')
-const Topic = require('../models/Topic')
+import Topic from '../models/Topic'
 
-const createTopic = (req, res) => {
+export const createTopic = (req, res) => {
   const topic = new Topic({
     title: req.body.title,
     description: req.body.description,
     createdBy: {
       id: req.user.id,
-      name: req.user.name
+      username: req.user.username
     },
     members: [{
       id: req.user.id,
-      name: req.user.name
+      username: req.user.username
     }]
   })
 
@@ -23,7 +22,7 @@ const createTopic = (req, res) => {
     })
 }
 
-const getAllTopics = (req, res) => {
+export const getAllTopics = (req, res) => {
   const perPage = parseInt(req.query.perPage) || 20
   const filter = req.query.filter || ''
   const currentPage = req.query.page > 0 ? req.query.page - 1 : 0
@@ -59,7 +58,7 @@ const getAllTopics = (req, res) => {
     })
 }
 
-const getTopicById = (req, res) => {
+export const getTopicById = (req, res) => {
   const id = req.params.topicId
   Topic.findById(id)
   .then(topic => {
@@ -71,10 +70,4 @@ const getTopicById = (req, res) => {
       error: error.message
     })
   })
-}
-
-module.exports = {
-  createTopic,
-  getTopicById,
-  getAllTopics
 }

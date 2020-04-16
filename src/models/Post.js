@@ -1,12 +1,9 @@
-const mongoose = require('mongoose')
-mongoose.set('useCreateIndex', true)
+import mongoose from 'mongoose'
 
-const postSchema = mongoose.Schema({
+export const postSchema = mongoose.Schema({
   title: { type: String, required: true },
   body: { type: String },
   comments: { type: Array },
-  createdBy: { type: String, required: true, ref: 'User' },
-  belongsTo: { type: String, required: true, ref: 'Topic' }
-}, { timestamps: true})
-
-module.exports = postSchema
+  createdBy: { type: Array, required: true, ref: 'User' },
+  resourceUri: { type: String }
+}, { timestamps: true, versionKey: false })

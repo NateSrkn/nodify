@@ -1,37 +1,32 @@
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
-const cors = require('cors')
-const dotenv = require('dotenv').config()
+import express from 'express'
+import cors from 'cors'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 
-const port = process.env.PORT || 3000
+dotenv.config()
+import { usersRoute } from './routes/user'
+import { authRoute } from './routes/auth'
+import { topicsRoute } from './routes/topics'
 
-mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
-  console.log('Connected to DB')
-}).catch((err) => {
-  console.log(err)
-})
+export const app = express()
 
-const usersRoute = require('./routes/user.js')
-const authRoute = require('./routes/auth.js')
-const postsRoute = require('./routes/posts')
-const topicsRoute = require('./routes/topics')
-app.use(cors({
-  credentials: true,
-  origin: true
-}))
+// Middleware
+app.use(cors({credentials: true, origin: true}))
 app.options('*', cors())
 app.use(express.json())
+
+// Routes
 app.use('/api/users', usersRoute)
 app.use('/api/auth', authRoute)
-app.use('/api/posts', postsRoute)
 app.use('/api/topics', topicsRoute)
 app.use('/', (req, res) => {
-  res.json({
-    message: 'uh!'
-  })
+  res.json({ message: 'uh!' })
 })
 
-app.listen(port, () => {
-  console.log(`Now running on ${port}`)
-})
+let mongo = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_CONNECT : process.env.DB_CONNECT
+mongoose.connect(mongo, { useNewUrlParser: true, useUnifiedTopology: true })
+
+mongoose.Promise = global.Promise
+
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB Connection Error...'))
+

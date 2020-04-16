@@ -1,19 +1,19 @@
-const router = require('express').Router()
-const verify = require('./validateToken')
-const { createTopic, getAllTopics, getTopicById } = require('../controllers/topics')
-const { createPost } = require('../controllers/posts')
+import express from 'express'
+import { verifyToken } from '../helpers/helper'
+import { createTopic, getAllTopics, getTopicById } from '../controllers/topics'
+import { createPost } from '../controllers/posts'
 
-router.post('/', verify, createTopic)
+let router = express.Router()
 
 router.get('/', getAllTopics)
-
 router.get('/:topicId', getTopicById)
 
-router.post('/:topicId/posts', createPost)
+router.post('/', verifyToken, createTopic)
+router.post('/:topicId/posts', verifyToken, createPost)
 // router.get('/:topicId', getTopicById)
 
-// router.patch('/:topicId', verify ,updateTopic)
+// router.patch('/:topicId', verifyToken ,updateTopic)
 
-// router.delete('/:topicId', verify, deleteTopic)
+// router.delete('/:topicId', verifyToken, deleteTopic)
 
-module.exports = router
+export { router as topicsRoute }

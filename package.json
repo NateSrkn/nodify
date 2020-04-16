@@ -6,6 +6,7 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "bcryptjs": "^2.4.3",
+    "chai-as-promised": "^7.1.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -14,10 +15,24 @@
     "validator": "^13.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@shelf/jest-mongodb": "^1.1.5",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jest": "^23.8.2",
+    "jest": "^25.3.0",
+    "nodemon": "^2.0.3",
+    "supertest": "^4.0.2"
   },
   "scripts": {
-    "start": "node ./src/index.js",
-    "start:dev": "nodemon --signal SIGTERM ./src/index.js"
+    "serve": "node dist/server.js",
+    "start": "yarn build && node ./dist/server.js",
+    "start:dev": "yarn build && nodemon --signal SIGTERM ./dist/server.js",
+    "build": "babel src -d dist",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch"
   }
 }
