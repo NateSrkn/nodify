@@ -15,16 +15,13 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
+var _user = require("./routes/user");
+
+var _auth = require("./routes/auth");
+
+var _topics = require("./routes/topics");
+
 _dotenv["default"].config();
-
-var _require = require('./routes/user'),
-    usersRoute = _require.usersRoute;
-
-var _require2 = require('./routes/auth.js'),
-    authRoute = _require2.authRoute;
-
-var _require3 = require('./routes/topics'),
-    topicsRoute = _require3.topicsRoute;
 
 var app = (0, _express["default"])(); // Middleware
 
@@ -36,9 +33,9 @@ app.use((0, _cors["default"])({
 app.options('*', (0, _cors["default"])());
 app.use(_express["default"].json()); // Routes
 
-app.use('/api/users', usersRoute);
-app.use('/api/auth', authRoute);
-app.use('/api/topics', topicsRoute);
+app.use('/api/users', _user.usersRoute);
+app.use('/api/auth', _auth.authRoute);
+app.use('/api/topics', _topics.topicsRoute);
 app.use('/', function (req, res) {
   res.json({
     message: 'uh!'
