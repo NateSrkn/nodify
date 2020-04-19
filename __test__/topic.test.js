@@ -11,8 +11,9 @@ describe('Topics', () => {
     await Topic.deleteMany()
   })
 
-  afterAll(() => {
-    server.close()
+  afterAll( async (done) => {
+    await server.close()
+    done()
   })
 
   describe('GET Topics', () => {
