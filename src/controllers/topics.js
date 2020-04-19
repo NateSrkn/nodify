@@ -1,19 +1,9 @@
 import Topic from '../models/Topic'
+import { formTopic } from '../helpers/dataForms'
 
-export const createTopic = (req, res) => {
-  const topic = new Topic({
-    title: req.body.title,
-    description: req.body.description,
-    createdBy: {
-      id: req.user.id,
-      username: req.user.username
-    },
-    members: [{
-      id: req.user.id,
-      username: req.user.username
-    }]
-  })
-
+export const createTopic = async (req, res) => {
+  const topic = await formTopic(req, res)
+  if(topic.statusCode === 400) return
   return topic.save()
     .then(topic => {
       return res.status(200).json({ topic })
@@ -30,7 +20,8 @@ export const getAllTopics = (req, res) => {
   const orderBy = req.query.orderBy || 'desc'
   const sortQuery = { [sortBy]: orderBy }
   const filterQuery = { title: new RegExp(filter, 'i') }
-
+  const includePosts = req.query.includePosts
+  const includeMembers = req.query.includeMembers
   Topic.countDocuments(filterQuery)
     .then(topicCount => {
       if(currentPage * perPage > topicCount) return res.status(400).json({ message: 'No topics here'})
@@ -38,7 +29,7 @@ export const getAllTopics = (req, res) => {
         .limit(perPage)
         .skip(currentPage * perPage)
         .sort(sortQuery)
-        .select('id title description createdBy createdAt')
+        .select(`id title description ${includePosts ? 'posts' : null} ${includeMembers ? 'members' : null} createdBy createdAt`)
         .then(topics => {
           return res.status(200).json({
             topics,
@@ -58,16 +49,27 @@ export const getAllTopics = (req, res) => {
     })
 }
 
-export const getTopicById = (req, res) => {
-  const id = req.params.topicId
-  Topic.findById(id)
-  .then(topic => {
-    res.status(200).json({ topic })
-  }).catch(error => {
-    res.status(500).json({
-      success: false,
-      message: `Unable to find topic with id of ${id}`,
-      error: error.message
+export const getTopicById = async (req, res) => {
+  try {
+    const topicId = req.params.topicId
+    await Topic.findById(topicId).exec((err, topic) => {
+      if(!topic) return res.status(404).json({ error: 'No topic was found' })
+      return res.status(200).json({ topic })
     })
-  })
+  } catch(error) {
+    return res.status(50).json({ error: error.message })
+  }
+}
+
+export const deleteTopic = async (req, res) => {
+  try {
+    const topicId = req.params.topicId
+    await Topic.findById(topicId).exec((err, topic) => {
+      if(!topic) return res.status(404).json({ error: 'No topic was found' })
+      if(topic.createdBy._id != req.user._id) return res.status(400).json({ error: `You don't have permission to perform this action`})
+      Topic.deleteOne({ _id: topic._id }).exec(() => res.status(200).json({ success: true, topic: topic }))  
+    })
+  } catch(error) {
+    return res.status(500).json({ error: error.message })
+  }
 }

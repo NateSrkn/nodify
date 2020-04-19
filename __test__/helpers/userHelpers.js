@@ -16,6 +16,13 @@ export const userTwo = {
   password: 'password'
 }
 
+export const badUser = {
+  name: 'Mr. Tester',
+  username: 'A testing man',
+  email: 'email',
+  password: 'password'
+}
+
 export const createUser = async (user = testUser) => {
   let password = await hashPass(user.password)
   await User.create({

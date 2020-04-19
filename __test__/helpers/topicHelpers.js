@@ -1,7 +1,7 @@
 import Topic from '../../src/models/Topic'
 
 export const testTopic = {
-  title: 'Testing',
+  title: 'TestingTopics',
   description: 'A topic all about tests',
 }
 
@@ -11,12 +11,12 @@ export const createTopic = async (topic = testTopic, user) => {
     description: topic.description,
     members: [
       {
-        id: user._id,
+        _id: user._id,
         username: user.username
       }
     ],
     createdBy: {
-      id: user._id,
+      _id: user._id,
       username: user.username
     }
   })

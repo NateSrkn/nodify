@@ -15,6 +15,8 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
+var _morgan = _interopRequireDefault(require("morgan"));
+
 var _user = require("./routes/user");
 
 var _auth = require("./routes/auth");
@@ -26,6 +28,7 @@ _dotenv["default"].config();
 var app = (0, _express["default"])(); // Middleware
 
 exports.app = app;
+app.use((0, _morgan["default"])('combined'));
 app.use((0, _cors["default"])({
   credentials: true,
   origin: true

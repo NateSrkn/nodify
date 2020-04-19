@@ -1,7 +1,9 @@
 import express from 'express'
 import { verifyToken } from '../helpers/helper'
 import { createUser, getAllUsers, getUserById, deleteUser, updateUser } from '../controllers/users'
+
 let router = express.Router()
+
 router.post('/', createUser)
 
 router.get('/', verifyToken, getAllUsers)

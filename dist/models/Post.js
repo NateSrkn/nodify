@@ -9,6 +9,8 @@ exports.postSchema = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
+var _Comment = require("./Comment");
+
 var postSchema = _mongoose["default"].Schema({
   title: {
     type: String,
@@ -17,9 +19,7 @@ var postSchema = _mongoose["default"].Schema({
   body: {
     type: String
   },
-  comments: {
-    type: Array
-  },
+  comments: [_Comment.commentSchema],
   createdBy: {
     type: Array,
     required: true,

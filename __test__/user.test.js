@@ -2,14 +2,15 @@ import server from '../src/server'
 import { request } from './index'
 import User from '../src/models/User'
 
-import { setUser, authUser, userTwo, testUser } from './helpers/userHelpers'
+import { setUser, authUser, userTwo, testUser, badUser } from './helpers/userHelpers'
 
 describe('Users', () => {
   afterEach(async () => {
     await User.deleteMany()
   })
 
-  afterAll(() => {
+  afterAll(async () => {
+    await User.deleteMany()
     server.close()
   })
 
@@ -37,14 +38,14 @@ describe('Users', () => {
     })
 
     it('It should get a user by their id', async () => {
-      let { status, body } = await request.get(`/api/users/${user.id}`).set('Authorization', `Bearer ${auth.body.token}`)
+      let { status, body } = await request.get(`/api/users/${user._id}`).set('Authorization', `Bearer ${auth.body.token}`)
       expect(status).toBe(200)
-      expect(body).toHaveProperty('_id')
-      expect(body).toHaveProperty('name')
-      expect(body).toHaveProperty('username')
-      expect(body).toHaveProperty('email')
-      expect(body).not.toHaveProperty('password')
-      expect(body).toHaveProperty('createdAt')
+      expect(body.user).toHaveProperty('_id')
+      expect(body.user).toHaveProperty('name')
+      expect(body.user).toHaveProperty('username')
+      expect(body.user).toHaveProperty('email')
+      expect(body.user).not.toHaveProperty('password')
+      expect(body.user).toHaveProperty('createdAt')
     })
 
     it('It should not show users if not authenticated', async () => {
@@ -64,6 +65,13 @@ describe('Users', () => {
       expect(body).not.toHaveProperty('password')
       expect(body).toHaveProperty('createdAt')
     })
+
+    it('It should not allow user creation if their info does not validate', async () => {
+      let { status, body } = await request.post('/api/users').send(badUser)
+      expect(status).toBe(400)
+      expect(body).toHaveProperty('error')
+    })
+
 
     it('Should authenticate a user', async () => {
       let user = await setUser()
@@ -191,15 +199,20 @@ describe('Users', () => {
     it('It should DELETE the user if their id\'s match and they are authenticated', async () => {
       let { status, body } = await request.delete(`/api/users/${user._id}`).set('Authorization', `Bearer ${auth.body.token}`)
       expect(status).toBe(200)
-      expect(body).toHaveProperty('message')
       expect(body).toHaveProperty('success')
       expect(body).toHaveProperty('user')
+      expect(body.user).toHaveProperty('_id')
+      expect(body.user).toHaveProperty('name')
+      expect(body.user).toHaveProperty('username')
+      expect(body.user).toHaveProperty('email')
+      expect(body.user).not.toHaveProperty('password')
+      expect(body.user).toHaveProperty('createdAt')
     })
 
     it('It should not DELETE the user if their id\'s don\'t match', async () => {
       let delUser = await setUser(userTwo)
       let { status, body } = await request.delete(`/api/users/${delUser._id}`).set('Authorization', `Bearer ${auth.body.token}`)
-      expect(status).toBe(401)
+      expect(status).toBe(400)
       expect(body).toHaveProperty('message')
     })
   })

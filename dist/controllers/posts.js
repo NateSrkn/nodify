@@ -1,11 +1,13 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createPost = void 0;
+exports.deletePost = exports.getPostById = exports.createPost = void 0;
 
-var Topic = require('../models/Topic');
+var _Topic = _interopRequireDefault(require("../models/Topic"));
 
 var createPost = function createPost(req, res) {
   var post = {
@@ -16,7 +18,8 @@ var createPost = function createPost(req, res) {
       username: req.user.username
     }
   };
-  Topic.findById(req.params.topicId).then(function (topic) {
+
+  _Topic["default"].findById(req.params.topicId).then(function (topic) {
     topic.posts.push(post);
     topic.save().then(function () {
       return res.status(200).json({
@@ -35,3 +38,21 @@ var createPost = function createPost(req, res) {
 };
 
 exports.createPost = createPost;
+
+var getPostById = function getPostById(req, res) {
+  var topicId = req.params.topicId;
+  var postId = req.params.postId;
+
+  _Topic["default"].findById(topicId).then(function (topic) {
+    var post = topic.posts.id(postId);
+    res.status(200).json({
+      post: post
+    });
+  });
+};
+
+exports.getPostById = getPostById;
+
+var deletePost = function deletePost(req, res) {};
+
+exports.deletePost = deletePost;
