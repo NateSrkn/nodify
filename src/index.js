@@ -3,6 +3,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
+import path from 'path'
 
 dotenv.config()
 import { usersRoute } from './routes/user'
@@ -21,9 +22,7 @@ app.use(express.json())
 app.use('/api/users', usersRoute)
 app.use('/api/auth', authRoute)
 app.use('/api/topics', topicsRoute)
-app.use('/', (req, res) => {
-  res.json({ message: 'uh!' })
-})
+app.use('/', express.static(path.join(__dirname, 'public')))
 
 let mongo = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_CONNECT : process.env.DB_CONNECT
 
