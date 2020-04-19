@@ -14,5 +14,6 @@ jobs:
       - run: yarn test
         env: 
           NODE_ENV: test
-          TEST_DB_CONNECT: mongodb+srv://natesrkn:P5d267hpT0MfsTMS@cluster0-4ukwr.gcp.mongodb.net/Test?retryWrites=true&w=majority
+          TEST_DB_CONNECT: ${{ secrets.TEST_DB_CONNECT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
       - run: yarn build
