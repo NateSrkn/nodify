@@ -9,9 +9,9 @@ describe('Users', () => {
     await User.deleteMany()
   })
 
-  afterAll(async () => {
-    await User.deleteMany()
-    server.close()
+  afterAll(async (done) => {
+    Promise.all(server.close(), User.deleteMany())
+    done()
   })
 
   describe('/GET Users', () => {
