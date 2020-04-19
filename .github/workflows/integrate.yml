@@ -6,6 +6,9 @@ jobs:
   test_pull_request:
     runs-on: ubuntu-latest
     steps:
+      - env: 
+          NODE_ENV: test
+          TEST_DB_CONNECT: mongodb+srv://natesrkn:P5d267hpT0MfsTMS@cluster0-4ukwr.gcp.mongodb.net/Test?retryWrites=true&w=majority
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
