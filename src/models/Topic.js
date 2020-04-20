@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import { postSchema } from './Post'
-mongoose.set('useCreateIndex', true)
 
 const topicSchema = mongoose.Schema({
   title: { type: String, required: true, max: 40, unique: true },

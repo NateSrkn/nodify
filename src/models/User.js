@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-mongoose.set('useCreateIndex', true)
 
 const userSchema = mongoose.Schema({
   name: { type: String, required: true, max: 40 },

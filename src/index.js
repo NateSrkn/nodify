@@ -26,7 +26,7 @@ app.use('/', express.static(path.join(__dirname, 'public')))
 
 let mongo = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_CONNECT : process.env.DB_CONNECT
 
-mongoose.connect(mongo, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongo, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 
 mongoose.Promise = global.Promise
 
