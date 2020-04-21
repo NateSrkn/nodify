@@ -37,7 +37,7 @@ export const postValidation = (body) => {
 }
 
 export const commentValidation = (body) => {
-  const schema = Joi.Joi({
+  const schema = Joi.object({
     message: Joi.string().required()
   })
   return schema.validate(body)

@@ -2,6 +2,7 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import User from '../models/User'
+import { loginValidation } from './validators/postValidation'
 
 export const verifyToken = async (req, res, next) => {
   let token = req.header('x-access-token') || req.header('authorization')
@@ -39,4 +40,28 @@ export const compareUser = async (req, res) => {
   if (requestedUser.statusCode === 404) return
   if (authorizedUser != requestedUser._id) return res.status(400).json({ message: 'You are not authorized to perform this action'})
   return requestedUser
+}
+
+export const generateToken = (user) => {
+  let sign = {
+    _id: user._id,
+    name: user.name,
+    username: user.username,
+    issuer: 'https://www.nathansorkin.com'
+  }
+  const token = jwt.sign(sign, process.env.JWT_SECRET, { expiresIn: '15min' })
+  return token
+}
+
+export const validateUser = async (user, res) => {
+  try {
+    const { error } = loginValidation(user)
+    if(error) return res.status(401).json({ error: error.message })
+    const currentUser = await User.findOne({ email: user.email })
+    const password = currentUser && await bcrypt.compare(user.password, currentUser.password)
+    if(!password || !user) return res.status(401).json({ error: 'Username or password is incorrect' })
+    return currentUser
+  }catch(error) {
+    return res.status(500).json({ error: error.message })
+  }
 }
