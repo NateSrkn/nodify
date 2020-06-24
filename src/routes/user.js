@@ -1,13 +1,14 @@
 import express from 'express'
-import { verifyToken } from '../helpers/helper'
+import { verifyToken } from '../middleware/validate'
 import { createUser, getAllUsers, getUserById, deleteUser, updateUser } from '../controllers/users'
+import { verifyAdmin } from '../middleware/admin'
 
 let router = express.Router()
 
 router.post('/', createUser)
 
-router.get('/', verifyToken, getAllUsers)
-router.get('/:userId', verifyToken, getUserById)
+router.get('/', [verifyToken, verifyAdmin], getAllUsers)
+router.get('/:userId', [verifyToken, verifyAdmin], getUserById)
 
 router.patch('/:userId', verifyToken ,updateUser)
 

@@ -19,7 +19,7 @@ export const createUser = async (req, res) => {
       createdAt: user.createdAt
     })
   }).catch((error) => {
-    return error
+    return res.status(500).json({ error: error.message })
   })
 }
 

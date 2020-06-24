@@ -1,6 +1,6 @@
 import { app } from './index'
 
-let port = process.env.PORT || 3000
+let port = process.env.PORT || 4000
 
 const server = app.listen(port, () => {
   console.log(`Server is listening on ${port}`)

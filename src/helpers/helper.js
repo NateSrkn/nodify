@@ -47,6 +47,7 @@ export const generateToken = (user) => {
     _id: user._id,
     name: user.name,
     username: user.username,
+    isAdmin: user.isAdmin,
     issuer: 'https://www.nathansorkin.com'
   }
   const token = jwt.sign(sign, process.env.JWT_SECRET, { expiresIn: '15min' })
@@ -54,6 +55,7 @@ export const generateToken = (user) => {
 }
 
 export const validateUser = async (user, res) => {
+  console.log(user)
   try {
     const { error } = loginValidation(user)
     if(error) return res.status(401).json({ error: error.message })
